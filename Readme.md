@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Мария Худякова](https://up.htmlacademy.ru/univer-js1/1/user/2221219).
-* Наставник: [Дмитрий Рябинин](https://htmlacademy.ru/profile/id63289).
+* Наставник: [Дмитрий Рябинин](https://up.htmlacademy.ru/univer-js1/1/user/63289).
 
 ---
 
