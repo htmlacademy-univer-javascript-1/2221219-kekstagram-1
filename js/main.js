@@ -62,4 +62,5 @@ function generateDataDescription(photoNum) {
 }
 
 const dataDescription = generateDataDescription(photoNumber);
+// eslint-disable-next-line no-console
 console.log(dataDescription);
