@@ -1,7 +1,5 @@
 import { dataDescription } from './data.js';
+import { createPhotos } from './thumbnail.js';
 
-dataDescription();
-
-// Строки для отладки
-// eslint-disable-next-line no-console
-// console.log(dataDescription());
+const arrPhotos = dataDescription();
+createPhotos(arrPhotos);
