@@ -1,4 +1,4 @@
-import { getRandomElement, getRandomPositiveInteger } from './util.js';
+import { getRandomElement, getRandomPositiveInteger, randomId } from './util.js';
 
 const photoNumber = 25;
 const likesNumber = {min: 15, max: 200};
@@ -24,10 +24,10 @@ const DESCRIPTION = [
   'Это про.. ну вы поняли',
   ':/ (Экономим буквы - реагируем смайликами)'];
 
-function generateComment(id) {
+function generateComment() {
   return {
-    id: getRandomPositiveInteger(1, 1000),
-    avatar: `img/avatar-${id}.svg`,
+    id: getRandomPositiveInteger(1, 300),
+    avatar: `img/avatar-${getRandomPositiveInteger(1, 6)}.svg`,
     message: getRandomElement(MESSAGES),
     name: getRandomElement(NAMES)
   };
@@ -38,22 +38,27 @@ function generatePhotoObj(id) {
     id: id,
     url: `photos/${id}.jpg`,
     description: getRandomElement(DESCRIPTION),
-    likes: getRandomPositiveInteger(likesNumber.min , likesNumber.max),
+    likes: getRandomPositiveInteger(likesNumber.min, likesNumber.max),
     comments: generateListComments()
   };
 }
 
 //Пусть под каждой фотографией можно оставить от 1 до 5 комментариев
 function generateListComments() {
-  const commentArrayObj = Array.from({length: getRandomPositiveInteger(1, 5)}).map((value, index) => generateComment(index + 1));
-  return commentArrayObj;
+  const COMMENTS = [];
+  const COUNT = getRandomPositiveInteger(1, 7);
+  for (let i = 0; i < COUNT; i++) {
+    COMMENTS.push(generateComment());
+  }
+  return COMMENTS;
 }
 
 function generateDataDescription(photoNum) {
-  const arrayObj = Array.from({length: photoNum}).map((value, index) => generatePhotoObj(index + 1));
+  const arrId = randomId();
+  const arrayObj = Array.from({length: photoNum}).map((value, index) => generatePhotoObj(arrId[index + 1]));
   return arrayObj;
 }
 
-const dataDescription = () => generateDataDescription(photoNumber);
+const dataDescription = generateDataDescription(photoNumber);
 
 export { dataDescription };

@@ -1,22 +1,25 @@
-const templatePicture = document.querySelector('#picture').content;
-const newPictureTemplate = templatePicture.querySelector('.picture');
+import { dataDescription } from './data.js';
+
+const pictureTemplate = document.querySelector('#picture').content;
+const newPictureTemplate = pictureTemplate.querySelector('.picture');
 const photosContainer = document.querySelector('.pictures');
 
-const createPhoto = function({url, likes, comments}) {
-  const clonedPicture = newPictureTemplate.cloneNode(true) ;
-  clonedPicture.querySelector('.picture__img').sre = url;
-  clonedPicture.querySelector('.picture__likes').textContent = likes;
-  clonedPicture.querySelector('.picture_comments').textContent = comments.length;
+const getPhotoElement = function({url, likes, comments}) {
+  const clonedPhoto = newPictureTemplate.cloneNode(true);
+  clonedPhoto.querySelector('.picture__img').src = url;
+  clonedPhoto.querySelector('.picture__comments').textContent = comments.length;
+  clonedPhoto.querySelector('.picture__likes').textContent = likes;
 
-  return clonedPicture;
+  return clonedPhoto;
 };
 
-const createPhotos = function(photos) {
-  const fragment = document.createDocumentFragment ();
-  for(let i = 0; i < photos.length; i++) {
-    fragment.appendChild(createPhoto(photos[i]));
+const renderPhotos = function (photos) {
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < photos.length; i++) {
+    fragment.appendChild(getPhotoElement(photos[i]));
   }
   photosContainer.appendChild(fragment);
 };
 
-export{ createPhotos };
+renderPhotos(dataDescription);
+export {renderPhotos};
