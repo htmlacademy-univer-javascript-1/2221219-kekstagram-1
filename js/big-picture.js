@@ -13,6 +13,7 @@ const fillComments = (comments) => {
     cloneComment.querySelector('.social__text').textContent = comment.message;
     fragment.appendChild(cloneComment);
   });
+
   commentsList.innerHTML = '';
   commentsList.append(fragment);
 };
