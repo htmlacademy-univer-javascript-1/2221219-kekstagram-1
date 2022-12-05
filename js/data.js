@@ -1,4 +1,4 @@
-import { getRandomElement, getRandomPositiveInteger } from './util.js';
+import { getRandomElement, getRandomPositiveInteger, createID, createURL } from './util.js';
 
 const photoNumber = 25;
 const likesNumber = {min: 15, max: 200};
@@ -10,7 +10,16 @@ const MESSAGES = [
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
   'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
+  'Полный восторг',
+  'Прекрасно! Именно это мне было нужно',
+  'Мой кот одобряет',
+  'Собственно, что и требовалось доказать',
+  'Довольно умно, стоит сказать',
+  'Есть захотелось',
+  'Интересная обстановка',
+  '))) !!!!',
+  '^0^~~'];
 const NAMES = ['Alexandr S.', 'Jadzia D.', 'Кекс', 'Джулиан', 'Ким', 'Елена', 'Вика', 'Odo', 'Арсений', 'Дмитрий'];
 const DESCRIPTION = [
   'Хотелось бы пожелать доброго утра, но когда утро было добрым',
@@ -24,19 +33,19 @@ const DESCRIPTION = [
   'Это про.. ну вы поняли',
   ':/ (Экономим буквы - реагируем смайликами)'];
 
-function generateComment(id) {
+function generateComment() {
   return {
     id: getRandomPositiveInteger(1, 1000),
-    avatar: `img/avatar-${id}.svg`,
+    avatar: `img/avatar-${getRandomPositiveInteger(1, 6)}.svg`,
     message: getRandomElement(MESSAGES),
     name: getRandomElement(NAMES)
   };
 }
 
-function generatePhotoObj(id) {
+function generatePhotoObj() {
   return {
-    id: id,
-    url: `photos/${id}.jpg`,
+    id: createID(),
+    url: `photos/${createURL()}.jpg`,
     description: getRandomElement(DESCRIPTION),
     likes: getRandomPositiveInteger(likesNumber.min , likesNumber.max),
     comments: generateListComments()
