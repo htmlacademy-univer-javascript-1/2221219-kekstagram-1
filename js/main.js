@@ -1,5 +1,5 @@
 import { dataDescription } from './data.js';
-import { createPhotos } from './thumbnail.js';
+import { renderPhotos } from './thumbnail.js';
 
-const arrPhotos = dataDescription();
-createPhotos(arrPhotos);
+const arr = dataDescription();
+renderPhotos(arr);
