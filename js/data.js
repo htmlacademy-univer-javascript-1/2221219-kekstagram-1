@@ -54,6 +54,6 @@ function generateDataDescription(photoNum) {
   return arrayObj;
 }
 
-const dataDescription = () => generateDataDescription(photoNumber);
+const dataDescription = generateDataDescription(photoNumber);
 
 export { dataDescription };

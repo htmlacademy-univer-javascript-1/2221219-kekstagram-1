@@ -1,5 +1,7 @@
-import { dataDescription } from './data.js';
-import { createPhotos } from './thumbnail.js';
+import { renderPhotos } from './pictures.js';
 
-const arrPhotos = dataDescription();
-createPhotos(arrPhotos);
+renderPhotos();
+
+// Строки для отладки
+// eslint-disable-next-line no-console
+// console.log(dataDescription());
