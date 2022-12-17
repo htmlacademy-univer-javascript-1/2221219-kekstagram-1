@@ -18,4 +18,17 @@ function createURL () {
   return url++;
 }
 
-export { getRandomElement, getRandomPositiveInteger, createID, createURL };
+const isEscapeKey = (evt) => evt.keyCode === 27;
+
+function checkForRepeats (list) {
+  const containerForСomparison = {};
+  for (const element of list) {
+    if (containerForСomparison[element]) {
+      return true;
+    }
+    containerForСomparison[element] = 1;
+  }
+  return false;
+}
+
+export { getRandomElement, getRandomPositiveInteger, createID, createURL, isEscapeKey, checkForRepeats };

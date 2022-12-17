@@ -1,3 +1,5 @@
+import { isEscapeKey } from './util.js';
+
 const bigPictureWindow = document.querySelector('.big-picture');
 const closeButton = bigPictureWindow.querySelector('#picture-cancel');
 
@@ -19,7 +21,7 @@ const fillComments = (comments) => {
 };
 
 const closeByEscape = (evt) => {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     document.body.classList.remove('modal-open');
     bigPictureWindow.classList.add('hidden');
     document.removeEventListener('keydown', () => closeByEscape);
@@ -44,4 +46,4 @@ const openPhoto = (onePicture) => {
   document.addEventListener('keydown', closeByEscape);
 };
 
-export {openPhoto};
+export { openPhoto };
