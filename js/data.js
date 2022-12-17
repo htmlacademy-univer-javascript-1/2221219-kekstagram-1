@@ -2,7 +2,6 @@ import { getRandomElement, getRandomPositiveInteger, createID, createURL } from 
 
 const photoNumber = 25;
 const likesNumber = {min: 15, max: 200};
-//const commentMaxLength = 140;
 
 const MESSAGES = [
   'Всё отлично!',
@@ -52,9 +51,9 @@ function generatePhotoObj() {
   };
 }
 
-//Пусть под каждой фотографией можно оставить от 1 до 5 комментариев
+//Пусть под каждой фотографией можно оставить от 1 до 30 комментариев
 function generateListComments() {
-  const commentArrayObj = Array.from({length: getRandomPositiveInteger(1, 5)}).map((value, index) => generateComment(index + 1));
+  const commentArrayObj = Array.from({length: getRandomPositiveInteger(1, 30)}).map((value, index) => generateComment(index + 1));
   return commentArrayObj;
 }
 
