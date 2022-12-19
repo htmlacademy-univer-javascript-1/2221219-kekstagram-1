@@ -88,10 +88,8 @@ const onEffectsListClick = (evt) => {
     if(currentEffect !== ''){
       image.classList.remove(currentEffect);
     }
-
     slider.noUiSlider.set(SLIDER.MAX);
     effectLevelValue.value = SLIDER.MAX;
-
     currentEffect = target.classList[1];
     image.classList.add(currentEffect);
     setEffect(currentEffect);
