@@ -1,4 +1,6 @@
 import { isEscapeKey } from './util.js';
+import { setDefaultScale } from './scale.js';
+import { setDefaultEffect } from './filters.js';
 
 const form = document.querySelector('.img-upload__form');
 const body = document.querySelector('body');
@@ -8,7 +10,6 @@ const editingCloseButtonElement = editingWindow.querySelector('#upload-cancel');
 const submitButtonElement = form.querySelector('.img-upload__submit');
 const hashtagsInputElement = form.querySelector('input[name="hashtags"]');
 const descriptionInputElement = form.querySelector('textarea[name="description"]');
-
 
 loadImgButtonElement.addEventListener('input', openEditingWindow);
 
@@ -20,7 +21,7 @@ function buttonKeydownHandler (evt) {
   }
 }
 
-const pristine = new Pristine(form, {
+const pristine = new Pristine (form, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'span',
@@ -53,6 +54,9 @@ function openEditingWindow () {
   document.addEventListener('keydown', buttonKeydownHandler);
   hashtagsInputElement.addEventListener('input', validateForm);
   descriptionInputElement.addEventListener('input', validateForm);
+
+  setDefaultScale();
+  setDefaultEffect();
 }
 
 export { pristine, hashtagsInputElement, descriptionInputElement };

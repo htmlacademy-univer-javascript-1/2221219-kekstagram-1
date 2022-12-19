@@ -1,7 +1,7 @@
 import { getRandomElement, getRandomPositiveInteger, createID, createURL } from './util.js';
 
-const photoNumber = 25;
-const likesNumber = {min: 15, max: 200};
+const PHOTO_COUNT = 25;
+const LIKES_COUNT = {min: 15, max: 200};
 
 const MESSAGES = [
   'Всё отлично!',
@@ -32,7 +32,7 @@ const DESCRIPTION = [
   'Это про.. ну вы поняли',
   ':/ (Экономим буквы - реагируем смайликами)'];
 
-function generateComment() {
+function generateComment () {
   return {
     id: getRandomPositiveInteger(1, 1000),
     avatar: `img/avatar-${getRandomPositiveInteger(1, 6)}.svg`,
@@ -41,12 +41,12 @@ function generateComment() {
   };
 }
 
-function generatePhotoObj() {
+function generatePhotoObj () {
   return {
     id: createID(),
     url: `photos/${createURL()}.jpg`,
     description: getRandomElement(DESCRIPTION),
-    likes: getRandomPositiveInteger(likesNumber.min , likesNumber.max),
+    likes: getRandomPositiveInteger(LIKES_COUNT.min , LIKES_COUNT.max),
     comments: generateListComments()
   };
 }
@@ -57,11 +57,11 @@ function generateListComments() {
   return commentArrayObj;
 }
 
-function generateDataDescription(photoNum) {
+function generateDataDescription (photoNum) {
   const arrayObj = Array.from({length: photoNum}).map((value, index) => generatePhotoObj(index + 1));
   return arrayObj;
 }
 
-const dataDescription = () => generateDataDescription(photoNumber);
+const dataDescription = () => generateDataDescription(PHOTO_COUNT);
 
 export { dataDescription };
