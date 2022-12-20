@@ -26,4 +26,26 @@ const openModal = (modal, parent) => {
   parent.classList.add('modal-open');
 };
 
-export { getRandomInteger, openModal, closeModal, checkForRepeats };
+const getUniqueRandomNumbers = (min, max, count, prohibited) => {
+  const nums = [];
+  while (nums.length !== count) {
+    const newNum = getRandomInteger(min, max);
+    if (!nums.includes(newNum) && !prohibited.includes(newNum)) {
+      nums.push(newNum);
+    }
+    else {
+      continue;
+    }
+  }
+  return nums;
+};
+
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export { getRandomInteger, openModal, closeModal, checkForRepeats, getUniqueRandomNumbers, debounce };
