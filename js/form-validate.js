@@ -1,8 +1,7 @@
 import { checkForRepeats } from './util.js';
-import { pristine, hashtagsInputElement, descriptionInputElement } from './form.js';
 
 const MAX_LENGTH_COMMENT = 140;
-const MAX_LENGTH_HASHTAG = 20;
+const MAX_LENGTH_HASHTAG = 5;
 const MAX_HASHTAGS_COUNT = 5;
 let massageHashtagError = '';
 
@@ -16,7 +15,20 @@ const HASHTAG_RULES = {
   GOOD: ''
 };
 
-const re = /^#(?=.*[^0-9])[a-zа-яё0-9]{1,19}$/;
+const RE = /^#(?=.*[^0-9])[a-zа-яё0-9]{1,19}$/;
+
+const imgUploadForm = document.querySelector('.img-upload__form');
+const hashtagsInputElement = imgUploadForm.querySelector('.text__hashtags');
+const descriptionInputElement = imgUploadForm.querySelector('.text__description');
+
+const pristine = new Pristine(imgUploadForm, {
+  classTo: 'img-upload__field-wrapper',
+  errorClass: 'img-upload__field-wrapper--invalid',
+  successClass: 'img-upload__field-wrapper--valid',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'div',
+  errorTextClass: 'form__error'
+});
 
 function validateHashtag (value) {
   massageHashtagError = HASHTAG_RULES.GOOD;
@@ -25,7 +37,7 @@ function validateHashtag (value) {
   const hashtags = value.split(' ');
   if (hashtags[0] !== '') {
     for (const hashtag of hashtags) {
-      if (!re.test(hashtag)){
+      if (!RE.test(hashtag)){
         if (hashtag[0] !== '#') {
           massageHashtagError = HASHTAG_RULES.HASHTAG_SYMBOL;
           return false;
@@ -60,3 +72,5 @@ const validateDescription = (value) => value.length <= MAX_LENGTH_COMMENT;
 
 pristine.addValidator(hashtagsInputElement, validateHashtag, generateMessageHashtags);
 pristine.addValidator(descriptionInputElement, validateDescription, 'Длина комментария не может составлять больше 140 символов');
+
+export { pristine };

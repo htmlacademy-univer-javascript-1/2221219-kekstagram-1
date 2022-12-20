@@ -1,47 +1,109 @@
-const STEP_SCALE = 25;
-const MIN_SCALE_VALUE = 25;
-const MAX_SCALE_VALUE = 100;
-const RADIX = 10;
+import { changeEffect, createEffectSlider, sliderConnector } from './filters.js';
 
-const imageOverlay = document.querySelector('.img-upload__overlay');
-const image = imageOverlay.querySelector('.img-upload__preview').querySelector('img');
-const scaleControl = imageOverlay.querySelector('.img-upload__scale');
-const scaleField = scaleControl.querySelector('.scale__control--value');
+const INITIAL_SCALE_VALUE = 1.0;
+const MIN_SCALE_VALUE = 0.25;
+const MAX_SCALE_VALUE = 1.0;
+const SCALE_CHANGE_STEP = 0.25;
+const INITIAL_EFFECT = 'none';
 
-const setDefaultScale = () => {
-  scaleField.value = `${MAX_SCALE_VALUE}%`;
-  image.style = `transform: scale(${1})`;
+const imgUploadForm = document.querySelector('.img-upload__form');
+const picture = imgUploadForm.querySelector('.img-upload__preview img');
+const scaleControlBlock = imgUploadForm.querySelector('.img-upload__scale');
+const scaleControl = {
+  block: scaleControlBlock,
+  smaller: scaleControlBlock.querySelector('.scale__control--smaller'),
+  text: scaleControlBlock.querySelector('.scale__control--value'),
+  bigger: scaleControlBlock.querySelector('.scale__control--bigger'),
+  scale: INITIAL_SCALE_VALUE
+};
+const effectsList = imgUploadForm.querySelector('.effects__list');
+const buttons = effectsList.querySelectorAll('.effects__radio');
+const effectLevelSlider = imgUploadForm.querySelector('.effect-level__slider');
+const effectLevelValue = imgUploadForm.querySelector('.effect-level__value');
+let currentEffect = INITIAL_EFFECT;
+
+
+const disableButtonsIfNeeded = () => {
+  if ((scaleControl.scale === MIN_SCALE_VALUE) !== scaleControl.smaller.hasAttribute('disabled')) {
+    scaleControl.smaller.toggleAttribute('disabled');
+  }
+  if ((scaleControl.scale === MAX_SCALE_VALUE) !== scaleControl.bigger.hasAttribute('disabled')) {
+    scaleControl.bigger.toggleAttribute('disabled');
+  }
 };
 
-const setCorrectValue = (scaleValue) => {
-  if(scaleValue < MIN_SCALE_VALUE){
-    return MIN_SCALE_VALUE;
-  }
-  if(scaleValue > MAX_SCALE_VALUE)
-  {
-    return MAX_SCALE_VALUE;
-  }
-  return scaleValue;
-};
-
-const onScaleControlClick = (evt) => {
+const scaleControlListener = (evt) => {
+  evt.preventDefault();
   const target = evt.target;
-  if(target.tagName === 'BUTTON'){
-    let value = scaleField.value;
-    value = scaleField.value.substr(0,value.length - 1);
-    let scaleCoefficient = 1;
-    if(target.classList.contains('scale__control--smaller'))
-    {
-      scaleCoefficient = -1;
+  if (target.tagName !== 'BUTTON') {
+    return;
+  }
+  else {
+    if (target === scaleControl.smaller) {
+      scaleControl.scale -= SCALE_CHANGE_STEP;
     }
-    value = parseInt(value,RADIX) + STEP_SCALE * scaleCoefficient;
-    value = setCorrectValue(value);
+    if (target === scaleControl.bigger) {
+      scaleControl.scale += SCALE_CHANGE_STEP;
+    }
+  }
+  scaleControl.text.value = `${Math.round(scaleControl.scale * 100)}%`;
+  picture.style.transform = `scale(${scaleControl.scale})`;
+  disableButtonsIfNeeded();
+};
 
-    image.style = `transform: scale(${value / MAX_SCALE_VALUE})`;
-    scaleField.value = `${value}%`;
+const enableScaleChanger = () => {
+  scaleControl.text.value = `${Math.round(scaleControl.scale * 100)}%`;
+  picture.style.transform = `scale(${scaleControl.scale})`;
+  scaleControl.block.addEventListener('click', scaleControlListener);
+  disableButtonsIfNeeded();
+};
+
+const disnableScaleChanger = () => {
+  scaleControl.block.removeEventListener('click', scaleControlListener);
+};
+
+const effectRadiosListener = () => {
+  picture.classList.remove(`effects__preview--${currentEffect}`);
+  buttons.forEach((button) => {
+    if (button.checked) {
+      currentEffect = button.value;
+      changeEffect(currentEffect);
+    }
+  });
+  picture.classList.add(`effects__preview--${currentEffect}`);
+};
+
+const enableEffectPreview = () => {
+  effectsList.addEventListener('click', effectRadiosListener);
+  createEffectSlider();
+  changeEffect(currentEffect);
+  effectLevelSlider.noUiSlider.set(parseFloat(effectLevelValue.value));
+  effectLevelSlider.noUiSlider.on('update', sliderConnector);
+  if (currentEffect === 'none') {
+    effectLevelSlider.classList.add('hidden');
   }
 };
 
-scaleControl.addEventListener('click', onScaleControlClick);
+const disableEffectPreview = () => {
+  picture.classList.remove(`effects__preview--${currentEffect}`);
+  effectsList.removeEventListener('click', effectRadiosListener);
+  effectLevelSlider.noUiSlider.destroy();
+};
 
-export { setDefaultScale };
+const resetEffect = () => {
+  scaleControl.scale = INITIAL_SCALE_VALUE;
+  currentEffect = INITIAL_EFFECT;
+  imgUploadForm.reset();
+};
+
+export {
+  enableScaleChanger,
+  disnableScaleChanger,
+  enableEffectPreview,
+  disableEffectPreview,
+  effectLevelSlider,
+  effectLevelValue,
+  picture,
+  currentEffect,
+  resetEffect
+};
