@@ -1,7 +1,11 @@
-import { dataDescription } from './data.js';
-import { renderPhotos } from './thumbnail.js';
+import { getData } from './api.js';
+import { renderLoadError } from './thumbnail.js';
+import { renderThumbnails } from './thumbnail.js';
 import './form.js';
-import './form-validate.js';
 
-const arr = dataDescription();
-renderPhotos(arr);
+getData((photos) => {
+  renderThumbnails(photos);
+},
+() => {
+  renderLoadError('Не удалось загрузить фотографии(');
+});

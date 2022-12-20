@@ -1,107 +1,76 @@
-const MAX_FILTER_VALUE = 100;
-const RADIX = 10;
-const MAX_BLUR_VALUE = 3;
-const MAX_HEAT_VALUE = 3;
-const EFFECTS_STEP = 0.01;
-
-const SLIDER = {
-  MIN: 0,
-  MAX: MAX_FILTER_VALUE,
-  STEP: 1,
+import { effectLevelSlider, effectLevelValue, picture, currentEffect } from './scale.js';
+const EFFECT_DICT = {
+  chrome: {
+    filter: 'grayscale',
+    range: {min: 0, max: 1.0},
+    step: 0.1,
+    measurementUnit: ''},
+  sepia: {
+    filter: 'sepia',
+    range: {min: 0, max: 1.0},
+    step: 0.1,
+    measurementUnit: ''},
+  marvin: {
+    filter: 'invert',
+    range: {min: 0, max: 100},
+    step: 1,
+    measurementUnit: '%'},
+  phobos: {
+    filter: 'blur',
+    range: {min: 0, max: 3.0},
+    step: 0.1,
+    measurementUnit: 'px'},
+  heat: {
+    filter: 'brightness',
+    range: {min: 1, max: 3.0},
+    step: 0.1,
+    measurementUnit: ''}
 };
 
-const form = document.querySelector('.img-upload__form');
-const effectsList = form.querySelector('.effects__list');
-const preview = form.querySelector('.img-upload__preview');
-const image = preview.querySelector('img');
-const effectLevel = form.querySelector('.img-upload__effect-level');
-const effectLevelValue = form.querySelector('.effect-level__value');
-const slider = form.querySelector('.effect-level__slider');
-const defaultImageClass = image.classList[0];
-
-let currentEffect = '';
-
-noUiSlider.create(slider, {
-  range: {
-    min: SLIDER.MIN,
-    max: SLIDER.MAX,
-  },
-  start: SLIDER.MAX,
-  step: SLIDER.STEP,
-  connect: 'lower',
-});
-
-const getEffectStep = (effectMaxValue) => effectMaxValue * EFFECTS_STEP;
-
-const effects = {
-  none: () => {
-    effectLevel.classList.add('visually-hidden');
-    return 'none';
-  },
-
-  chrome: () => {
-    effectLevel.classList.remove('visually-hidden');
-    return `grayscale(${parseInt(effectLevelValue.value, RADIX)* getEffectStep(1)})`;
-  },
-
-  sepia: () => {
-    effectLevel.classList.remove('visually-hidden');
-    return `sepia(${parseInt(effectLevelValue.value, RADIX)* getEffectStep(1)})`;
-  },
-
-  marvin: () => {
-    effectLevel.classList.remove('visually-hidden');
-    return `invert(${parseInt(effectLevelValue.value, RADIX)* getEffectStep(MAX_FILTER_VALUE)}%) `;
-  },
-
-  phobos: () => {
-    effectLevel.classList.remove('visually-hidden');
-    return `blur(${parseInt(effectLevelValue.value, RADIX)* getEffectStep(MAX_BLUR_VALUE)}px)`;
-  },
-
-  heat: () => {
-    effectLevel.classList.remove('visually-hidden');
-    const effectMin = SLIDER.MAX / (MAX_HEAT_VALUE - 1);
-    return `brightness(${(effectMin + parseInt(effectLevelValue.value, RADIX))* getEffectStep(MAX_HEAT_VALUE - 1)})`;
-  },
+const createEffectSlider = () => {
+  noUiSlider.create(effectLevelSlider, {
+    range: {
+      min: 0,
+      max: 1.0,
+    },
+    start: 1.0,
+    step: 0.1,
+    connect: 'lower',
+  });
 };
 
-const setDefaultEffect = () => {
-  effectLevel.classList.add('visually-hidden');
-
-  image.className = defaultImageClass;
-  image.style.filter = effects.none;
-};
-
-const setEffect = (effect) => {
-  image.style.filter = effects[effect.replace('effects__preview--','')]();
-};
-
-const onEffectsListClick = (evt) => {
-  let target = evt.target;
-
-  if(target.classList.contains('effects__label')){
-    target = evt.target.querySelector('span');
+const sliderConnector = () => {
+  if (currentEffect === 'none') {
+    picture.style.filter = '';
+    return;
   }
+  const effect = EFFECT_DICT[currentEffect];
+  picture.style.filter = `${effect.filter}(${effectLevelSlider.noUiSlider.get()}${effect.measurementUnit})`;
+  effectLevelValue.value = `${effectLevelSlider.noUiSlider.get()}${effect.measurementUnit}`;
+};
 
-  if(target.classList.contains('effects__preview')){
-    if(currentEffect !== ''){
-      image.classList.remove(currentEffect);
-    }
-    slider.noUiSlider.set(SLIDER.MAX);
-    effectLevelValue.value = SLIDER.MAX;
-    currentEffect = target.classList[1];
-    image.classList.add(currentEffect);
-    setEffect(currentEffect);
+const changeEffect = (effect) => {
+  if ((currentEffect === 'none') !== (effectLevelSlider.classList.contains('hidden'))){
+    effectLevelSlider.classList.toggle('hidden');
+  }
+  if (currentEffect !== 'none') {
+    const effectObj = EFFECT_DICT[effect];
+    effectLevelSlider.noUiSlider.updateOptions({
+      range: {
+        min: effectObj.range.min,
+        max: effectObj.range.max,
+      },
+      start: effectObj.range.max,
+      step: effectObj.step
+    });
+  }
+  else {
+    picture.style.filter = '';
   }
 };
 
-const onSliderChange = () => {
-  effectLevelValue.value = slider.noUiSlider.get();
-  setEffect(currentEffect);
+export {
+  createEffectSlider,
+  sliderConnector,
+  changeEffect
 };
-
-slider.noUiSlider.on('change', onSliderChange);
-effectsList.addEventListener('click', onEffectsListClick);
-
-export { setDefaultEffect };
